@@ -1,0 +1,82 @@
+<div class="direction-modal__background" *ngIf="isVisible" (click)="closeModal()">
+  <div
+    class="direction-modal__content"
+    @slideInOut
+    (@slideInOut.done)="onAnimationEvent($event)"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="top-actions__block">
+      <h2>Откуда</h2>
+
+      <button (click)="closeModal()">
+        <app-icon icon="close-without-back-icon" color="#515151" width="20" height="20"/>
+      </button>
+    </div>
+
+    <div class="search-input__block">
+      <div class="search-icon__block">
+        <app-icon icon="search-icon" color="none"/>
+      </div>
+      <input
+        #searchFromInput
+        id="searchFromInput"
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+        placeholder="Поиск..."
+      >
+      <div
+        class="clear-icon__block"
+        *ngIf="searchTerm.length"
+        (click)="resetSearch()"
+      >
+        <app-icon icon="reset-input-icon" color="#fff" width="14" height="14"/>
+      </div>
+    </div>
+
+    <p class="title-list__directions">Популярные направления</p>
+    <ul class="directions-list">
+      <li
+        *ngFor="let direction of filteredDirections"
+        [ngClass]="{'highlight-country': !direction.country}"
+        (click)="chooseDirection(direction)"
+        class="directions-list__item"
+      >
+        <div class="flight-routes__block">
+          <div class="location-info">
+            <div class="location-info__left">
+              <app-icon icon="location-from-icon" color="#666F8D" width="24" height="24"/>
+
+              <div class="location-info__left-block">
+                <span class="city">{{ direction.city }}</span>
+                <span class="county">{{ direction.country }}</span>
+              </div>
+            </div>
+
+            <span>{{ direction.airport_code }}</span>
+          </div>
+
+          <div
+            class="airports-block"
+            *ngIf="direction.airports && direction.airports.length > 1"
+          >
+            <ul class="airports-list">
+              <li
+                class="airports-list__item"
+                *ngFor="let airport of direction.airports"
+                (click)="chooseDirection(airport)"
+              >
+                <div class="airports-list__item-left">
+                  <app-icon icon="directions-airplane-icon" color="none" width="30" height="30"/>
+                  <span>{{ airport.city }}</span>
+                </div>
+
+                <span>{{ airport.airport_code }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

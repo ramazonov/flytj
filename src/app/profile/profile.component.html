@@ -1,0 +1,152 @@
+<div class="main-block">
+  <div class="top-nav__block">
+    <span class="close-button" (click)="closeModal()">
+      <app-icon icon="arrow-left-icon" color="none"/>
+    </span>
+
+    <h3>Профиль</h3>
+
+    <div>
+      <app-icon icon="settings-icon"/>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <ul class="profile-class__list">
+      <span
+        class="toggle-indicator"
+        [class.my-tickets]="selectedTab === 'my-tickets'"
+        [class.passenger]="selectedTab === 'passenger'"
+      ></span>
+      <li class="profile-class__list-item">
+        <button
+          class="profile-class__button"
+          [class.active]="selectedTab === 'my-tickets'"
+          (click)="selectItem('my-tickets')"
+        >
+          Мои билеты
+        </button>
+      </li>
+      <li class="profile-class__list-item">
+        <button
+          class="profile-class__button"
+          [class.active]="selectedTab === 'passenger'"
+          (click)="selectItem('passenger')"
+        >
+          Пассажиры
+        </button>
+      </li>
+    </ul>
+
+    <div
+      *ngIf="selectedTab === 'my-tickets'"
+      class="my-tickets-tab d-flex flex-column align-center gap-2"
+    >
+      <div *ngIf="ticketsDataList.length < 1" class="d-flex justify-center flex-column align-center gap-2">
+        <span class="ticket-icon">
+        <app-icon icon="ticket-big-icon" color="none" width="32" height="32"/>
+      </span>
+
+        <span class="text-center">Здесь будут показаны ваши билеты и <br> бронирования</span>
+      </div>
+
+      <ul *ngIf="parsedBookDataList.length > 0" class="tickets-list">
+        <li class="tickets-list__item" *ngFor="let ticket of parsedBookDataList">
+
+          <div class="d-flex justify-between top-titles__block">
+            <span class="order-title">Заказ {{ ticket.data.airline_booking_number | json }}</span>
+            <span class="date-title">{{ formatDate(ticket.createdDateTime) }}</span>
+          </div>
+
+          <div class="horizontal-line"></div>
+
+          <div class="d-flex flex-column justify-between gap-3 pa-3 pt-0">
+            <div class="d-flex justify-between">
+              <div class="d-flex flex-column directions-titles__block">
+                <span>
+                  {{ ticket.data.included.city[ticket.data.routes[0].segments[0].departure.city].name.ru }} →
+                  {{ ticket.data.included.city[ticket.data.routes[0].segments[ticket.data.routes[0].segments.length - 1].arrival.city].name.ru }}
+                </span>
+                <small>{{ isDirectFlight(ticket) ? 'Прямой рейс' : 'С пересадкой' }}</small>
+              </div>
+              <div class="d-flex flex-column prices-titles__block">
+                <span>{{ ticket.data.total_price.TJS }} TJS</span>
+                <small class="text-end" [class]="getStatusClass(ticket.status)">
+                  {{ getStatusText(ticket.status) }}
+                </small>
+              </div>
+            </div>
+
+            <div class="d-flex align-center gap-3">
+              <img
+                ngSrc="assets/suppliers/{{ticket.data.validating_supplier}}.png"
+                alt=""
+                height="30"
+                width="90"
+              >
+              <span>{{ getAirlineName(ticket, ticket.data.validating_supplier) }}</span>
+            </div>
+
+            <div *ngFor="let segment of ticket.data.routes[0].segments"
+                 class="d-flex align-center justify-between segment-block">
+              <div class="d-flex flex-column airport-title__block gap-1">
+                <strong>{{ segment.departure.time.split(' ')[1] }}</strong>
+                <span>{{ ticket.data.included.city[segment.departure.city].name.ru }}</span>
+                <small>({{ segment.departure.airport }})</small>
+              </div>
+
+              <div class="d-flex flex-column align-center time-title__block">
+                <app-icon icon="airplane-icon" color="none"/>
+                <span>{{ convertDuration(segment.duration) }}</span>
+              </div>
+
+              <div class="d-flex flex-column gap-1 align-end airport-title__block">
+                <strong>{{ segment.arrival.time.split(' ')[1] }}</strong>
+                <span>{{ ticket.data.included.city[segment.arrival.city].name.ru }}</span>
+                <small>({{ segment.arrival.airport }})</small>
+              </div>
+            </div>
+
+            <button class="btn-primary" (click)="downloadTicket(ticket)">Скачать билет (PDF)</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div
+      *ngIf="selectedTab === 'passenger'"
+      class="passengers-tab"
+    >
+      <div *ngIf="profileDataList">
+        <ul class="passengers-list">
+          <li
+            *ngFor="let passenger of profileDataList"
+            (click)="openEditPassengerModal(passenger)"
+            class="passengers-list__item"
+          >
+            <span>{{ passenger.firstName }} {{ passenger.surName }} {{ passenger.middleName }}</span>
+          </li>
+        </ul>
+      </div>
+
+      <span class="add-passenger__button" (click)="addPassengerModal()">
+        <span class="plus-sign">+</span> Добавить
+      </span>
+    </div>
+  </div>
+
+  <app-add-passenger-modal
+    class="add-passenger__block"
+    *ngIf="showAddPassengerModal"
+    (closeModalEvent)="closeAddPassengerModal()"
+    (passengerAddedEvent)="loadProfile()"
+  />
+
+  <app-edit-passenger-modal
+    class="edit-passenger__block"
+    [passenger]="passenger"
+    *ngIf="showEditPassengerModal"
+    (closeModalEvent)="closeEditPassengerModal()"
+    (passengerDeletedEvent)="loadProfile()"
+  />
+</div>

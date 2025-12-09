@@ -1,0 +1,155 @@
+.main-page-content {
+  padding: 75px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.divider-block {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+
+  .divider {
+    height: 1px;
+    border-radius: 1px;
+    background-color: #ecf0f1;
+    width: 90%;
+  }
+}
+
+.main-top__navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  padding: 20px;
+  width: -webkit-fill-available;
+  height: 58px;
+}
+
+.main-title {
+  line-height: 1;
+  font-size: 17px;
+  font-weight: normal;
+  margin: 0;
+}
+
+.main-subtitle {
+  margin: 0 0 22px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--seconday-text-color);
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 15px;
+
+  .directions-input__title {
+    color: #95a5a6;
+    font-size: 10px;
+  }
+}
+
+.custom-input {
+  width: inherit;
+}
+
+.sort-vertical__button {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+}
+
+.date-passengers__block {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 15px;
+
+  .left-block,
+  .right-block {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+
+    .button-dates {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: #fff;
+      color: var(--seconday-text-color);
+      border-radius: 12px;
+      border: 0.7px solid #ecf0f1;
+      padding: 10px 14px;
+      cursor: pointer;
+      width: 100%;
+      min-height: 47px;
+      max-height: 54px;
+
+      span {
+        display: flex;
+        font-size: 16px;
+        font-weight: 500;
+        max-width: 90px;
+      }
+
+      .passenger-class {
+        max-width: 100px;
+      }
+    }
+  }
+
+  .button-passenger {
+    background-color: #fff;
+    border-radius: 12px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+  }
+
+}
+
+.input-from__block,
+.input-where__block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+
+  .input-directions__inside-block {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+}
+
+.inactive-selected-date {
+  color: #666F8D;
+}
+
+.active-selected-date {
+  color: #030712;
+}
+
+.invalid-date {
+  border: 1px solid #FF1216 !important;
+  border-radius: 8px !important;
+}
+
+.invalid-date__title {
+  color: #FF1216;
+  font-size: 14px;
+}

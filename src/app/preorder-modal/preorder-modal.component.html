@@ -1,0 +1,234 @@
+<div *ngIf="isVisible" class="modal-background">
+  <div class="top-nav__block">
+    <span class="close-button" (click)="closeModal()">
+      <app-icon icon="arrow-left-icon" color="none"/>
+    </span>
+
+    <h3>Детали билета</h3>
+  </div>
+  <div class="main-content" (click)="$event.stopPropagation()">
+    <div class="main-content__block">
+      <div class="top-titles__block">
+        <div class="price-title d-flex flex-column gap-1">
+          <h1>{{ flight.value.total_price.TJS }} TJS</h1>
+          <span>Цена за 1 пассажира</span>
+        </div>
+
+        <div class="direction-title d-flex flex-column gap-1">
+          <div class="d-flex align-center gap-2">
+            <h4 class="ma-0">{{ fromCity }}</h4>
+            <app-icon icon="direction-pointer-icon"/>
+            <h4 class="ma-0"> {{ toCity }}</h4>
+          </div>
+
+          <span>{{ convertDuration(flight.value.routes[0].duration) }}</span>
+        </div>
+      </div>
+
+      <div class="preorder-main__block">
+        <div *ngFor="let segment of flight.value.routes[0].segments; let i = index; let last = last">
+          <div class="ticket-from__block">
+            <div class="ticket-actions__block">
+              <div class="d-flex flex-column gap-2">
+                <span *ngIf="!segment.hand_luggage">
+                  <app-icon icon="hand-luggage-icon" width="20" height="20" color="#666F8D"/>
+                  Без ручной клади
+                </span>
+                <span *ngIf="segment.hand_luggage">
+                  <app-icon icon="hand-luggage-icon" width="20" height="20" color="#00B06C"/>
+                  С ручной кладью
+                </span>
+                <span *ngIf="!segment.is_refund">
+                  <app-icon icon="refund-icon" width="20" height="20" color="#666F8D"/>
+                  Возврат невозможен
+                </span>
+                <span *ngIf="segment.is_refund">
+                  <app-icon icon="refund-icon" width="20" height="20" color="#00B06C"/>
+                  Возврат возможен
+                </span>
+              </div>
+              <div class="d-flex flex-column gap-2">
+                <span>
+                  <app-icon icon="cart-icon" width="20" height="20" color="#666F8D"/>
+                  Багаж до {{ segment.baggage.replace('KG', 'КГ') }}
+                </span>
+                <span *ngIf="!segment.is_change">
+                  <app-icon icon="change-icon" width="20" height="20" color="#666F8D"/>
+                  Нет обмена
+                </span>
+                <span *ngIf="segment.is_change">
+                  <app-icon icon="change-icon" width="20" height="20" color="#00B06C"/>
+                  Обмен возможен
+                </span>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="ticket-from__block-titles">
+              <div class="left-block d-flex align-center gap-2">
+                <img
+                  ngSrc="assets/suppliers/{{ flight.value.validating_supplier }}.png"
+                  alt=""
+                  width="90"
+                  height="30"
+                >
+                <span>{{ getAirlineName(segment.operation_supplier) }}</span>
+              </div>
+              <div class="right-block d-flex align-center gap-4">
+                <span>Номер рейса: {{ segment.carrier_number }}</span>
+                <span>Класс: {{ getServiceClassInCyrillic(segment.service_class.name) }}</span>
+              </div>
+            </div>
+
+            <div class="ticket-from__block-center">
+              <div class="d-flex gap-5">
+                <div class="vertical-block"></div>
+                <div class="d-flex flex-column gap-4">
+                  <div class="time-departure__block">
+                    <span>{{ extractHours(segment.departure.time) }}</span>
+                    <small>{{ formatDate(segment.departure.time) }}</small>
+                  </div>
+
+                  <div class="time-arrival__block">
+                    <span>{{ extractHours(segment.arrival.time) }}</span>
+                    <small>{{ formatDate(segment.arrival.time) }}</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex flex-column gap-4">
+                <div class="place-departure__block">
+                  <span>{{ getCityName(segment.departure.city) }}</span>
+                  <small>
+                    {{ getCityName(segment.departure.city) }}, {{ segment.departure.airport }}
+                  </small>
+                </div>
+
+                <div class="place-arrival__block">
+                  <span>{{ getCityName(segment.arrival.city) }}</span>
+                  <small>{{ getCityName(segment.arrival.city) }}, {{ segment.arrival.airport }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="transfer-time__block"
+            *ngIf="flight.value.routes[0].segments.length > 1 && !last"
+          >
+            <app-icon icon="time-icon"/>
+            <span>Пересадка в {{ getCityName(segment.arrival.city) }}е</span>
+          </div>
+        </div>
+
+        <div
+          *ngIf="flight.value.routes[1]?.segments"
+          class="direction-return__title d-flex flex-column gap-1"
+        >
+          <div class="d-flex align-center gap-2">
+            <h4 class="ma-0"> {{ toCity }}</h4>
+            <app-icon icon="direction-pointer-icon"/>
+            <h4 class="ma-0">{{ fromCity }}</h4>
+          </div>
+
+          <span>{{ convertDuration(flight.value.routes[1].duration) }}</span>
+        </div>
+
+        <div *ngIf="flight.value.routes[1]?.segments">
+          <div
+            class="ticket-from__block"
+            *ngFor="let segment of flight.value.routes[1].segments; let i = index"
+          >
+            <div class="ticket-actions__block">
+              <div class="d-flex flex-column gap-2">
+                <span *ngIf="!segment.hand_luggage">
+                  <app-icon icon="hand-luggage-icon" width="20" height="20" color="#666F8D"/>
+                  Без ручной клади
+                </span>
+                <span *ngIf="segment.hand_luggage">
+                  <app-icon icon="hand-luggage-icon" width="20" height="20" color="#00B06C"/>
+                  С ручной кладью
+                </span>
+                <span *ngIf="!segment.is_refund">
+                  <app-icon icon="refund-icon" width="20" height="20" color="#666F8D"/>
+                  Возврат невозможен
+                </span>
+                <span *ngIf="segment.is_refund">
+                  <app-icon icon="refund-icon" width="20" height="20" color="#00B06C"/>
+                  Возврат возможен
+                </span>
+              </div>
+              <div class="d-flex flex-column gap-2">
+                <span>
+                  <app-icon icon="cart-icon" width="20" height="20" color="#666F8D"/>
+                  Багаж до {{ segment.baggage.replace('KG', 'КГ') }}
+                </span>
+                <span *ngIf="!segment.is_change">
+                  <app-icon icon="cart-icon" width="20" height="20" color="#666F8D"/>
+                  Нет обмена
+                </span>
+                <span *ngIf="segment.is_change">
+                  <app-icon icon="cart-icon" width="20" height="20" color="#00B06C"/>
+                  Обмен возможен
+                </span>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="ticket-from__block-titles">
+              <div class="left-block d-flex align-center gap-2">
+                <img
+                  ngSrc="assets/suppliers/{{ flight.value.validating_supplier }}.png"
+                  alt=""
+                  width="90"
+                  height="30"
+                >
+                <span>{{ getAirlineName(segment.operation_supplier) }}</span>
+              </div>
+              <div class="right-block d-flex align-center gap-4">
+                <span>Номер рейса: {{ segment.carrier_number }}</span>
+                <span>Класс: {{ getServiceClassInCyrillic(segment.service_class.name) }}</span>
+              </div>
+            </div>
+
+            <div class="ticket-from__block-center">
+              <div class="d-flex gap-5">
+                <div class="vertical-block"></div>
+                <div class="d-flex flex-column gap-4">
+                  <div class="time-departure__block">
+                    <span>{{ extractHours(segment.departure.time) }}</span>
+                    <small>{{ formatDate(segment.departure.time) }}</small>
+                  </div>
+
+                  <div class="time-arrival__block">
+                    <span>{{ extractHours(segment.arrival.time) }}</span>
+                    <small>{{ formatDate(segment.arrival.time) }}</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex flex-column gap-4">
+                <div class="place-departure__block">
+                  <span>{{ getCityName(segment.departure.city) }}</span>
+                  <small>
+                    {{ getCityName(segment.departure.city) }}, {{ segment.departure.airport }}
+                  </small>
+                </div>
+
+                <div class="place-arrival__block">
+                  <span>{{ getCityName(segment.arrival.city) }}</span>
+                  <small>{{ getCityName(segment.arrival.city) }}, {{ segment.arrival.airport }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="buy-ticket__block" (click)="selectFlight(flight)">
+      <button class="btn-primary">Купить билет</button>
+    </div>
+  </div>
+</div>

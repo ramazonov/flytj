@@ -1,0 +1,47 @@
+<div *ngIf="isVisible" class="datepicker-modal__background" (click)="closeModal()">
+  <div
+    class="datepicker-modal__content"
+    @slideInOut
+    (@slideInOut.done)="onAnimationEvent($event)"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="holder-button">
+      <app-icon icon="holder-icon" width="50" height="8"/>
+    </div>
+
+    <div class="d-flex justify-between align-center mb-5">
+      <h4 class="date-title">Когда</h4>
+      <span class="reset-button" (click)="clearSelectedDate()">Сбросить</span>
+    </div>
+
+    <div class="px-3">
+      <ul class="list-group d-flex justify-between">
+        <li class="text-4" *ngFor="let week of weeks">{{ week }}</li>
+      </ul>
+    </div>
+
+    <div class="divider mb-3 mt-2"></div>
+
+    <div class="datepicker-content__block">
+      <div class="booking-form">
+        <mat-card class="calendar-card" *ngFor="let month of months">
+          <mat-calendar
+            [headerComponent]="calendarHeader"
+            [(selected)]="selectedDates"
+            [startAt]="month"
+            [minDate]="minDate"
+            [dateClass]="dateClass"
+            (selectedChange)="onDateSelected($event)">
+          </mat-calendar>
+        </mat-card>
+      </div>
+
+      <div class="search-ticket__block" *ngIf="selectedDates">
+        <div class="divider"></div>
+        <button class="btn-primary" (click)="confirmDates()">
+          Выбрать {{ formatSelectedDate() }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

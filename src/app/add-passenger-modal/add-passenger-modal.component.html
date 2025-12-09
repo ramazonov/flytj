@@ -1,0 +1,376 @@
+<div class="main-block">
+  <div class="top-nav__block">
+    <span class="close-button" (click)="closeModal()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M15 19.92L8.47997 13.4C7.70997 12.63 7.70997 11.37 8.47997 10.6L15 4.07999"
+          stroke="#292929"
+          stroke-width="1.5"
+          stroke-miterlimit="10"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </span>
+
+    <h3 class="top-nav__block-title">Добавить</h3>
+  </div>
+
+  <div class="main-content">
+    <h3 class="mt-0 mb-3">{{ getPassengerTypeDisplay() }}</h3>
+
+    <ul class="inputs-list">
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.invalid]="isValidationTriggered && !firstName"
+        >
+          <input
+            [(ngModel)]="firstName"
+            placeholder="Имя"
+            class="text-field"
+            type="text"
+            name="firstName"
+          >
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !isLatin(firstName)">
+          Поле должно быть заполнено и содержать только латинские буквы*
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.invalid]="isValidationTriggered && !surName"
+        >
+          <input
+            [(ngModel)]="surName"
+            placeholder="Фамилия"
+            class="text-field"
+            type="text"
+            name="surName"
+          >
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !isLatin(surName)">
+          Поле должно быть заполнено и содержать только латинские буквы*
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div class="inputs-list__item-block">
+          <input
+            [(ngModel)]="middleName"
+            placeholder="Отчество"
+            class="text-field"
+            name="middleName"
+            type="text"
+          >
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.invalid]="isValidationTriggered && !birthDate"
+        >
+          <span class="date-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M7.99994 2V5" stroke="#666F8D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M16.0001 2V5" stroke="#666F8D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M3.49994 9.09001H20.4999" stroke="#666F8D" stroke-width="1.5" stroke-miterlimit="10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path
+              d="M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z"
+              stroke="#666F8D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+              stroke-linejoin="round"/>
+            <path d="M15.6946 13.7H15.7036" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M15.6946 16.7H15.7036" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M11.9954 13.7H12.0043" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M11.9954 16.7H12.0043" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M8.29443 13.7H8.30342" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M8.29443 16.7H8.30342" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+          </svg>
+          </span>
+          <input
+            [(ngModel)]="birthDate"
+            (input)="onDateInput($event, 'birthDate')"
+            placeholder="Дата рождения"
+            type="text"
+            name="birthDate"
+            class="text-field"
+            inputmode="numeric"
+            pattern="[0-9]*"
+          >
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !birthDate">
+          Поле "Дата рождения" обязательно
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="selector-block"
+          (click)="toggleGenderDropdown()"
+          [class.invalid]="isValidationTriggered && !selectedGender"
+        >
+          <span class="selected-passport" *ngIf="selectedGender">
+            {{ getGenderText(selectedGender) }}
+          </span>
+          <span *ngIf="!selectedGender" class="selected-passport">
+            Выберите пол
+          </span>
+
+          <span class="selected-passport__arrow">
+            <img ngSrc="assets/svg/arrow-left.svg" alt="" height="18" width="18">
+          </span>
+
+          <div class="dropdown" *ngIf="isGenderDropdownOpen" (click)="$event.stopPropagation()">
+            <ul class="gender-list">
+              <li
+                class="gender-list__item"
+                *ngFor="let gender of genders"
+                (click)="selectGender(gender.value)"
+              >
+                {{ gender.text }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="invalid-field" *ngIf="isValidationTriggered && !selectedGender">
+          Поле "Пол" обязательно
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.invalid]="isValidationTriggered && !phone"
+        >
+          <input
+            [(ngModel)]="phone"
+            placeholder="Телефон"
+            class="text-field"
+            name="phone"
+            type="text"
+          >
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !selectedGender">
+          Поле "Телефон" обязательно
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.invalid]="isValidationTriggered && !email"
+        >
+          <input
+            [(ngModel)]="email"
+            placeholder="Email"
+            class="text-field"
+            name="email"
+            type="email"
+          >
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !email">
+          Поле "Телефон" обязательно
+        </div>
+      </li>
+    </ul>
+
+    <h3 class="mt-8 mb-3">Паспорт</h3>
+
+    <ul class="inputs-list">
+      <li class="inputs-list__item">
+        <div
+          class="selector-block"
+          (click)="toggleCitizenship()"
+          [class.invalid]="isValidationTriggered && !selectedCountry"
+        >
+          <span class="selected-passport" *ngIf="selectedCountry">
+            {{ selectedCountry }}
+          </span>
+
+          <span *ngIf="!selectedCountry" class="selected-passport">
+            Выберите гражданство
+          </span>
+
+          <span class="selected-passport__arrow">
+            <img ngSrc="assets/svg/arrow-left.svg" alt="" height="18" width="18">
+          </span>
+
+          <div class="dropdown" *ngIf="isCitizenshipDropdownOpen" (click)="$event.stopPropagation()">
+            <ul class="gender-list">
+              <li
+                class="gender-list__item"
+                *ngFor="let country of countries"
+                (click)="selectCountry(country)"
+              >
+                {{ country.name }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !selectedCountry">
+          Поле "Гражданство" обязательно
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="selector-block"
+          (click)="togglePassportDropdown()"
+          [class.invalid]="isValidationTriggered && !selectedPassportType"
+        >
+          <span class="selected-passport" *ngIf="selectedPassportType">
+            {{ selectedPassportType }}
+          </span>
+          <span *ngIf="!selectedPassportType" class="selected-passport">
+            Выберите тип документа
+          </span>
+
+          <span class="selected-passport__arrow">
+            <img ngSrc="assets/svg/arrow-left.svg" alt="" height="18" width="18">
+          </span>
+
+          <div class="dropdown" *ngIf="isPassportDropdownOpen" (click)="$event.stopPropagation()">
+            <ul class="gender-list">
+              <li
+                class="gender-list__item"
+                *ngFor="let passport of passports"
+                (click)="selectPassport(passport.name, passport.code)"
+              >
+                {{ passport.name }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !selectedPassportType">
+          Поле "Тип документа" обязательно
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.invalid]="isValidationTriggered && !issueDate"
+        >
+          <span class="date-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M7.99994 2V5" stroke="#666F8D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M16.0001 2V5" stroke="#666F8D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M3.49994 9.09001H20.4999" stroke="#666F8D" stroke-width="1.5" stroke-miterlimit="10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path
+              d="M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z"
+              stroke="#666F8D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+              stroke-linejoin="round"/>
+            <path d="M15.6946 13.7H15.7036" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M15.6946 16.7H15.7036" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M11.9954 13.7H12.0043" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M11.9954 16.7H12.0043" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M8.29443 13.7H8.30342" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M8.29443 16.7H8.30342" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+          </svg>
+        </span>
+          <input
+            [(ngModel)]="issueDate"
+            (input)="onDateInput($event, 'issueDate')"
+            placeholder="Дата выдачи паспорта"
+            name="PassportIssueDate"
+            class="text-field"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            type="text"
+          >
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !issueDate">
+          Поле "Дата выдачи паспорта" обязательно
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.invalid]="isValidationTriggered && !documentNumber"
+        >
+          <input
+            [(ngModel)]="documentNumber"
+            placeholder="Серия и номер документа"
+            name="documentNumber"
+            class="text-field"
+            type="text"
+          >
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !documentNumber">
+          Поле "Номер документа" обязательно
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.invalid]="isValidationTriggered && !expirationDate"
+        >
+          <span class="date-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M7.99994 2V5" stroke="#666F8D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M16.0001 2V5" stroke="#666F8D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M3.49994 9.09001H20.4999" stroke="#666F8D" stroke-width="1.5" stroke-miterlimit="10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path
+              d="M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z"
+              stroke="#666F8D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+              stroke-linejoin="round"/>
+            <path d="M15.6946 13.7H15.7036" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M15.6946 16.7H15.7036" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M11.9954 13.7H12.0043" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M11.9954 16.7H12.0043" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M8.29443 13.7H8.30342" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M8.29443 16.7H8.30342" stroke="#666F8D" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+          </svg>
+        </span>
+          <input
+            [(ngModel)]="expirationDate"
+            (input)="onDateInput($event, 'expirationDate')"
+            placeholder="Срок действия"
+            class="text-field"
+            inputmode="numeric"
+            name="expirationDate"
+            pattern="[0-9]*"
+            type="text"
+          >
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !expirationDate">
+          Поле "Номер документа" обязательно
+        </div>
+      </li>
+    </ul>
+
+    <button class="save-button btn-primary" (click)="addPassenger()">
+      Сохранить
+    </button>
+  </div>
+
+  <div class="loader-overlay" *ngIf="isPassengerAddingLoading">
+    <div class="loader"></div>
+  </div>
+</div>

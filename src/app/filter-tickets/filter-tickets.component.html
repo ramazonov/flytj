@@ -1,0 +1,85 @@
+<div
+  class="modal-background"
+  (click)="closeModal()"
+  *ngIf="isFilterVisible"
+>
+  <div
+    class="modal-content"
+    @slideInOut
+    (@slideInOut.done)="onAnimationFilterModal($event)"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="holder-button">
+      <app-icon icon="holder-icon" width="50" height="8"/>
+    </div>
+
+    <h2>Фильтры</h2>
+
+    <ul class="filter-block">
+      <li class="filter-details__block">
+        <span class="title">Стоимость</span>
+        <div class="filter-block__inputs">
+          <input
+            [(ngModel)]="minPrice"
+            placeholder="От"
+            type="number"
+          >
+          <input
+            [(ngModel)]="minPrice"
+            placeholder="До"
+            type="number"
+          >
+        </div>
+      </li>
+
+      <li class="divider"></li>
+
+      <li class="filter-details__block">
+        <span>Багаж</span>
+        <ul class="baggage-list">
+          <li class="baggage-list__item active">С багажом</li>
+          <li class="baggage-list__item">Без багажа</li>
+        </ul>
+      </li>
+
+      <li class="divider"></li>
+
+      <li class="filter-details__block">
+        <div>
+          <span>Возврат</span>
+        </div>
+        <ul class="refund-list">
+          <li class="refund-list__item active">С возвратом</li>
+          <li class="refund-list__item">Без возврата</li>
+        </ul>
+      </li>
+
+      <li class="divider"></li>
+
+      <li class="filter-details__block">
+        <div>
+          <span>Пересадки</span>
+        </div>
+        <ul class="transfer-list">
+          <li class="transfer-list__item active">Прямой рейс</li>
+          <li class="transfer-list__item">1 пересадка</li>
+          <li class="transfer-list__item">2 пересадки</li>
+        </ul>
+      </li>
+
+      <li class="divider"></li>
+
+      <li class="filter-details__block">
+        <div>
+          <span>Время</span>
+        </div>
+        <div class="filter-block__inputs">
+          <input type="text" placeholder="00:00">
+          <input type="text" placeholder="23:00">
+        </div>
+      </li>
+    </ul>
+
+    <button class="btn-primary">Показать результаты</button>
+  </div>
+</div>

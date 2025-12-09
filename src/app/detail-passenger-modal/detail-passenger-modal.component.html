@@ -1,0 +1,300 @@
+<div class="modal-background" *ngIf="isVisible">
+  <div class="top-nav__block">
+    <span class="close-button" (click)="closeModal()">
+      <app-icon icon="arrow-left-icon" color="none"/>
+    </span>
+    <h3 class="top-nav__block-title">{{ passenger.count }}</h3>
+  </div>
+
+  <div class="main-content">
+    <div class="top-title__block ">
+      <h1 class="main-passenger__title">{{ passenger.type }}</h1>
+      <div class="choose-button__block" (click)="openPassengersModal()">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="16" fill="none"/>
+          <path d="M9.5 16H21.5" stroke="black" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.5 22V10" stroke="black" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Выбрать</span>
+      </div>
+    </div>
+
+    <ul class="inputs-list">
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.error]="isValidationTriggered && !isLatin(name)"
+        >
+          <input
+            [(ngModel)]="name"
+            placeholder="Имя"
+            class="text-field"
+            type="text"
+            name="firstName"
+          >
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !isLatin(name)">
+          Поле должно быть заполнено и содержать только латинские буквы*
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.error]="isValidationTriggered && !isLatin(surname)"
+        >
+          <input
+            [(ngModel)]="surname"
+            placeholder="Фамилия"
+            class="text-field"
+            name="surName"
+            type="text"
+          >
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !isLatin(surname)">
+          Поле должно быть заполнено и содержать только латинские буквы*
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          [class.error]="isValidationTriggered && middleName.trim().length > 0 && !isLatin(middleName)"
+          class="inputs-list__item-block"
+        >
+          <input
+            [(ngModel)]="middleName"
+            placeholder="Отчество"
+            class="text-field"
+            name="middleName"
+            type="text"
+          >
+        </div>
+        <div class="invalid-field"
+             *ngIf="isValidationTriggered && middleName.trim().length > 0 && !isLatin(middleName)">
+          Поле должно быть содержать только латинские буквы*
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.error]="isValidationTriggered && !isValidDate(passengerDataList[selectedIndex]?.date_of_birth)"
+        >
+          <span class="date-icon">
+            <app-icon icon="calendar-inactive-icon" color="none"/>
+          </span>
+          <input
+            type="text"
+            [(ngModel)]="passengerDataList[selectedIndex].date_of_birth"
+            placeholder="Дата рождения"
+            name="date_of_birth"
+            class="text-field"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            (input)="formatDateInput($event)"
+          >
+        </div>
+        <div
+          class="invalid-field"
+          *ngIf="isValidationExpirationTriggered && !isValidDate(passengerDataList[selectedIndex].date_of_birth)"
+        >
+          Поле должно быть заполнено в формате дд.мм.гггг*
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div class="selector-block" (click)="toggleGenderDropdown()">
+          <span class="selected-passport" *ngIf="selectedGender">
+            {{ getGenderText(selectedGender) }}
+          </span>
+          <span *ngIf="!selectedGender" class="selected-passport">Выберите пол</span>
+
+          <div
+            class="dropdown"
+            *ngIf="isGenderDropdownOpen"
+            (click)="$event.stopPropagation()"
+          >
+            <ul class="gender-list">
+              <li
+                class="gender-list__item"
+                *ngFor="let gender of genders"
+                (click)="selectGender(gender)"
+              >
+                {{ gender.text }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="invalid-field" *ngIf="isValidationTriggered && !passengerDataList[selectedIndex]?.gender">
+          Обязательное поле*
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.error]="isValidationTriggered && !passengerDataList[selectedIndex]?.phone"
+        >
+          <input
+            [(ngModel)]="passengerDataList[selectedIndex].phone"
+            placeholder="Телефон"
+            class="text-field"
+            name="phone"
+            type="text"
+          >
+        </div>
+        <div
+          class="invalid-field"
+          *ngIf="isValidationTriggered && !passengerDataList[selectedIndex]?.phone"
+        >
+          Обязательное поле*
+        </div>
+
+        <div
+          class="invalid-field"
+          *ngIf="isValidationTriggered && !isPhoneValid()"
+        >
+          Номер должен содержать 9 цифр
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          [class.error]="isValidationTriggered && !passengerDataList[selectedIndex]?.email"
+          class="inputs-list__item-block"
+        >
+          <input
+            [(ngModel)]="passengerDataList[selectedIndex].email"
+            placeholder="Email"
+            class="text-field"
+            name="email"
+            type="email"
+          >
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !passengerDataList[selectedIndex]?.email">
+          Обязательное поле*
+        </div>
+      </li>
+    </ul>
+
+    <h3 class="mt-8 mb-3">Паспорт</h3>
+
+    <ul class="inputs-list">
+      <li class="inputs-list__item">
+        <div class="selector-block" (click)="toggleCitizenship()">
+          <span class="selected-passport" *ngIf="selectedCountry">
+            {{ selectedCountry }}
+          </span>
+          <span *ngIf="!selectedCountry" class="selected-passport">
+            Выберите гражданство
+          </span>
+
+          <div class="dropdown" *ngIf="isCitizenshipDropdownOpen" (click)="$event.stopPropagation()">
+            <ul class="gender-list">
+              <li
+                class="gender-list__item"
+                *ngFor="let country of countries"
+                (click)="selectCountry(country)"
+              >
+                {{ country.name }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="invalid-field" *ngIf=" isValidationTriggered &&!passengerDataList[selectedIndex]?.citizenship">
+          Обязательное поле*
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div class="selector-block" (click)="togglePassportDropdown()">
+          <span class="selected-passport" *ngIf="selectedPassportType">
+            {{ selectedPassportType }}
+          </span>
+          <span *ngIf="!selectedPassportType" class="selected-passport">
+            Выберите тип документа
+          </span>
+
+          <div class="dropdown" *ngIf="openDropdownPassport" (click)="$event.stopPropagation()">
+            <ul class="gender-list">
+              <li
+                class="gender-list__item"
+                *ngFor="let passport of passports"
+                (click)="selectPassport(passport.name, passport.code)"
+              >
+                {{ passport.name }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="invalid-field" *ngIf="!passengerDataList[selectedIndex]?.document_type">
+          Обязательное поле*
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.error]="isValidationTriggered && !passengerDataList[selectedIndex]?.document_number"
+        >
+          <input
+            [(ngModel)]="passengerDataList[selectedIndex].document_number"
+            placeholder="Серия и номер документа"
+            name="documentNumber"
+            class="text-field"
+            type="text"
+          >
+        </div>
+        <div class="invalid-field" *ngIf="isValidationTriggered && !passengerDataList[selectedIndex]?.document_number">
+          Обязательное поле*
+        </div>
+      </li>
+      <li class="inputs-list__item">
+        <div
+          class="inputs-list__item-block"
+          [class.error]="isValidationExpirationTriggered && !isValidDate(passengerDataList[selectedIndex].expiration_date)"
+        >
+          <span class="date-icon">
+            <app-icon icon="calendar-inactive-icon" color="none"/>
+          </span>
+          <input
+            type="text"
+            [(ngModel)]="passengerDataList[selectedIndex].expiration_date"
+            placeholder="Срок действия"
+            class="text-field"
+            inputmode="numeric"
+            name="expirationDate"
+            pattern="[0-9]*"
+            (input)="formatExpirationDateInput($event)"
+          >
+        </div>
+        <div
+          class="invalid-field"
+          *ngIf="isValidationExpirationTriggered && !isValidDate(passengerDataList[selectedIndex].expiration_date)"
+        >
+          Поле должно быть заполнено в формате дд.мм.гггг*
+        </div>
+      </li>
+    </ul>
+
+    <button class="save-button btn-primary" (click)="savePassengerData()">
+      Сохранить
+    </button>
+  </div>
+
+  <div class="loader-overlay" *ngIf="isPassengerLoading">
+    <div class="loader"></div>
+  </div>
+
+  <div
+    class="passengers-modal__background"
+    *ngIf="isPassengersModal"
+    [class.active]="profileDataList.length > 0"
+    (click)="closePassengerModal()"
+  >
+    <div class="passengers-modal" @slideInOut (click)="$event.stopPropagation()">
+      <ul class="passengers-list">
+        <li
+          *ngFor="let passenger of profileDataList"
+          class="passengers-list__item"
+          (click)="choosePassenger(passenger)"
+        >
+          <span>{{ passenger.firstName }} {{ passenger.surName }} {{ passenger.middleName }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

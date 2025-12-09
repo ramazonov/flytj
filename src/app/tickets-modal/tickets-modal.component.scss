@@ -1,0 +1,517 @@
+.tickets-modal__block {
+  z-index: 10;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #EFF6FF;
+  overflow: hidden;
+
+  .tickets-modal__content {
+    padding: 75px 20px 20px;
+    display: flex;
+    height: 100%;
+
+    .directions-title__block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: linear-gradient(90deg, #00B06C 0%, #34D399 100%);
+      border-radius: 12px;
+      padding: 17px;
+
+      .directions-info__title {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        .directions-title {
+          font-size: 17px;
+          font-weight: 600;
+          color: #fff;
+        }
+
+        .dash-block {
+          text-align: center;
+          width: 10px;
+          height: 2px;
+          border-radius: 8px;
+          background-color: #fff;
+        }
+      }
+
+      .booking-info__title-passengers {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        color: #fff;
+
+        span {
+          font-size: 17px;
+        }
+      }
+    }
+
+    .tickets-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      gap: 14px;
+      display: flex;
+      flex-direction: column;
+
+      &__item {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        padding: 18px 20px;
+        background-color: #fff;
+        border-radius: 16px;
+
+        &-top {
+          display: flex;
+          justify-content: space-between;
+
+          .amount-money__block {
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+
+            .amount-title {
+              font-size: 17px;
+              font-weight: 700;
+            }
+          }
+        }
+
+        .times-block {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          &__list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            &-time {
+              font-size: 17px;
+              font-weight: 700;
+            }
+
+            &-city {
+              font-size: 14px;
+            }
+
+            &-airport {
+              color: #666F8D;
+              font-size: 12px;
+            }
+          }
+
+          .airplane-icon__block {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            gap: 3px;
+
+            .times-block__title {
+              font-size: 12px;
+              color: #030712;
+              height: 18px;
+              display: flex;
+              align-items: center;
+              line-height: 1;
+              width: 100%;
+              justify-content: center;
+              text-align: center;
+
+              .divider-block {
+                display: flex;
+                justify-content: center;
+                gap: 3px;
+                padding: 0 8px;
+                width: 100%;
+
+                &__line {
+                  width: 100%;
+                  height: 1px;
+                  border-radius: 15px;
+                  background-color: #00B06C;
+                }
+              }
+            }
+          }
+        }
+
+        &-bottom {
+          display: flex;
+          justify-content: space-between;
+          color: #030712;
+          font-size: 12px;
+        }
+      }
+    }
+
+    .main-tickets__block {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      height: 100%;
+      width: 100%;
+      overflow: scroll;
+    }
+
+    .booking-info__title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background-color: #fff;
+      border-radius: 12px;
+
+      .booking-info__top {
+        display: flex;
+        align-items: center;
+
+        &-title {
+          font-weight: 400;
+          font-size: 15px;
+        }
+
+        .close-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #acacac;
+          border-radius: 50%;
+          min-width: 20px;
+          min-height: 20px;
+        }
+
+        .booking-info__bottom-title {
+          color: var(--primary-color);
+          font-size: 15px;
+        }
+      }
+
+      .arrow-left__icon {
+        display: flex;
+        align-items: center;
+        transform: rotate(-90deg);
+      }
+    }
+  }
+
+  .top-nav__block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 3;
+    background-color: #fff;
+  }
+}
+
+.loader-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 40px 0;
+  position: relative;
+
+  img {
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    animation: rotate 2s linear infinite;
+    width: 200px;
+  }
+
+  span {
+    position: absolute;
+    color: #666F8D;
+    font-size: 20px;
+    text-align: center;
+  }
+}
+
+.booking-info__modal-layout {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+  background: rgba(44, 44, 44, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+
+  .booking-info__modal {
+    background-color: #fff;
+    border-radius: 20px;
+    height: max-content;
+    width: 85%;
+    text-align: center;
+
+    &-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: #030712;
+    }
+
+    &-text {
+      color: #666F8D;
+      font-size: 14px;
+      font-weight: 400;
+    }
+  }
+}
+
+.filters-block {
+  display: flex;
+  gap: 12px;
+
+  .filter-price__button {
+    all: unset;
+    background-color: #fff;
+    padding: 10px 15px;
+    border-radius: 20px;
+    box-shadow: 0 4px 13px 0 rgba(43, 69, 78, 0.1019607843);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.price-filter__modal-layout,
+.transfer-filter__modal-layout {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+  background: rgba(44, 44, 44, 0.7);
+  display: flex;
+  align-items: end;
+
+  .price-filter__modal,
+  .transfer-filter__modal {
+    left: 0;
+    bottom: 0;
+    padding: 12px 34px 45px;
+    background-color: #fff;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    width: 100%;
+
+    h1 {
+      font-weight: normal;
+      font-size: 18px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+  }
+}
+
+.sort-by__flight-item,
+.sort-by__price-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-background {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+  background: rgba(29, 41, 53, 0.1882352941);
+  display: flex;
+  align-items: end;
+  z-index: 10;
+
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 15px 20px 28px;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: -webkit-fill-available;
+    z-index: 100;
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--seconday-text-color);
+    }
+
+    .holder-button {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .filter-block {
+      display: flex;
+      flex-direction: column;
+      margin: 0 0 30px;
+      padding: 0;
+      list-style: none;
+
+      .divider {
+        height: 1px;
+        background: linear-gradient(to right, #CBD5E1 20%, transparent 20%, transparent 40%, #CBD5E1 40%, #CBD5E1 40%, transparent 40%, transparent 60%, #CBD5E1 60%);
+        background-size: 25px 1px;
+        margin: 17px 0 12px;
+      }
+
+      .filter-details__block {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        .filter-block__inputs {
+          display: flex;
+          gap: 10px;
+          justify-content: space-between;
+          width: 100%;
+
+          input {
+            padding-left: 12px;
+            border-radius: 12px;
+            outline: none;
+            width: 100%;
+            height: 48px;
+            border: 1px solid #CBD5E1;
+            font-size: 16px;
+          }
+        }
+
+        .filter-time {
+          display: flex;
+          flex-direction: row !important;
+          gap: 15px;
+
+          select {
+            padding-left: 12px;
+            border-radius: 12px;
+            outline: none;
+            width: 100%;
+            height: 48px;
+            border: 1px solid #CBD5E1;
+            font-size: 16px;
+          }
+        }
+
+        .baggage-list,
+        .refund-list,
+        .transfer-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          gap: 12px;
+          overflow-x: auto;
+        }
+
+        .baggage-list__item,
+        .refund-list__item,
+        .transfer-list__item {
+          padding: 8px 20px;
+          color: #030712;
+          border-radius: 36px;
+          border: 1px solid #CBD5E1;
+          white-space: nowrap;
+        }
+
+        .active {
+          background-color: var(--primary-color);
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+.overflow-hidden {
+  overflow: hidden !important;
+}
+
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+  background: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #CBD5E1;
+  width: 120px;
+  text-align: center;
+}
+
+.dropdown-menu {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #CBD5E1;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  width: 120px;
+  text-align: center;
+}
+
+.dropdown-item {
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+  background: #f0f0f0;
+}

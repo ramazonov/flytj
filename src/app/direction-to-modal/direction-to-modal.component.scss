@@ -1,0 +1,157 @@
+.direction-modal__background {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+  z-index: 5;
+  background: rgba(29, 41, 53, 0.1882352941);
+}
+
+.direction-modal__content {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 28px;
+  margin-top: 80px;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  height: -webkit-fill-available;
+
+  .top-actions__block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      color: var(--seconday-text-color);
+    }
+
+    button {
+      all: unset;
+      height: 20px;
+      cursor: pointer;
+    }
+  }
+
+  .search-input__block {
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #CBD5E1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    gap: 5px;
+    min-height: 48px;
+
+    input {
+      border: none;
+      background: none;
+      font-size: 16px;
+      outline: none;
+      width: 100%;
+    }
+
+    .search-icon__block {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .clear-icon__block {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #999999;
+      border-radius: 50%;
+      min-width: 22px;
+      min-height: 22px;
+
+      svg {
+        width: 15px;
+        height: 15px;
+      }
+    }
+  }
+
+  .title-list__directions {
+    color: #666F8D;
+    margin: 16px 0;
+  }
+
+  .directions-list {
+    list-style: none;
+    padding: 0 10px 0 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: -webkit-fill-available;
+    gap: 15px;
+
+    &__item {
+
+      .flight-routes__block {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .location-info {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          &__left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            &-block {
+              .county {
+                white-space: break-spaces;
+                margin-left: 8px;
+                color: rgb(132, 134, 135);
+              }
+            }
+          }
+        }
+
+        .airports-block {
+          .airports-list {
+            display: flex;
+            flex-direction: column;
+            list-style: none;
+            padding-left: 18px;
+            gap: 15px;
+
+            &__item {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+
+              &-left {
+                display: flex;
+                align-items: center;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.highlight-country {
+  padding-left: 30px;
+}
+
+.divider-block {
+  height: 1px;
+  background-color: #e3e3e3;
+  margin-bottom: 15px;
+}

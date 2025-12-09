@@ -1,0 +1,256 @@
+.modal-background {
+  background-color: #EFF6FF;
+  height: 100vh;
+  width: -webkit-fill-available;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 75px 20px 20px;
+  display: flex;
+  z-index: 100;
+
+  .top-nav__block {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: -webkit-fill-available;
+    z-index: 3;
+    background-color: #fff;
+    padding: 20px;
+    height: 58px;
+
+    .close-button {
+      display: flex;
+      justify-content: center;
+    }
+
+    h3 {
+      width: 100%;
+      text-align: center;
+      font-weight: 400;
+      margin: 0;
+      font-size: 17px;
+    }
+  }
+
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 24px;
+
+    .ticket-main__block {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+      gap: 6px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      width: -webkit-fill-available;
+      background: linear-gradient(90deg, #00B06C 0%, #34D399 100%);
+      color: #fff;
+      line-height: 1;
+
+      .cities-title {
+        font-size: 18px;
+      }
+
+      &-bottom {
+        display: flex;
+        align-items: center;
+
+        .amount-title {
+          font-size: 22px;
+          font-weight: 700;
+        }
+
+        svg {
+          transform: rotate(-90deg);
+        }
+      }
+
+      .to-payment__title {
+        font-size: 14px;
+      }
+    }
+
+    .contacts-block {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+}
+
+.card-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  .card {
+    background-color: #fff;
+    padding: 0;
+    display: flex;
+
+    .text-field {
+      width: 100%;
+      border: none;
+      font-size: 16px;
+      padding: 16px;
+      border-radius: 12px;
+
+      &:focus-visible {
+        outline: none;
+      }
+
+      &::placeholder {
+        color: #95A5A6;
+      }
+    }
+
+    .error {
+      border-radius: 10px;
+      border: 1px solid red;
+    }
+  }
+
+  .invalid-field {
+    padding-left: 6px;
+    color: red;
+    font-size: 14px;
+  }
+}
+
+.desc-bottom__text {
+  font-size: 12px;
+  color: #666F8D;
+  margin: 0;
+}
+
+.passengers-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.block-title {
+  font-size: 20px;
+  color: #030712;
+  font-weight: 700;
+  margin: 0;
+}
+
+.passenger-block {
+  padding: 14px 16px;
+
+  &__left {
+    gap: 8px;
+
+    p {
+      font-size: 14px;
+      color: #1D2935;
+    }
+
+    small {
+      color: #666F8D;
+      font-size: 15px;
+    }
+  }
+
+  &__right {
+    gap: 8px;
+  }
+}
+
+.inputs-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+//.loader-layout {
+//  width: 100%;
+//  height: 100vh;
+//  position: absolute;
+//  left: 0;
+//  top: 0;
+//  display: flex;
+//}
+
+.validation-popup__layout {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+  background: rgba(26, 27, 31, 0.38);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .validation-popup__content {
+    border-radius: 10px;
+    background-color: #fff;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 30px;
+    width: 250px;
+    gap: 18px;
+
+    span {
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .close-popup__button {
+      -webkit-tap-highlight-color: transparent;
+      background-color: var(--primary-color);
+      color: #fff;
+      border-radius: 8px;
+      text-align: center;
+      height: 35px;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      padding: 0 30px;
+      cursor: pointer;
+      width: fit-content;
+      box-shadow: 0 4px 12px 0 rgba(0, 176, 108, 0.2509803922);
+    }
+  }
+}
+
+.validation-passenger__title {
+  font-size: 12px;
+  color: #FF1216;
+}
+
+.passenger__title {
+  color: #666F8D;
+  font-size: 12px;
+}
+
+.dash-block {
+  text-align: center;
+  width: 10px;
+  height: 2px;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.byu-ticket__button {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 40px;
+  width: 90%;
+}

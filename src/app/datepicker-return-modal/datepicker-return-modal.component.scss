@@ -1,0 +1,147 @@
+.datepicker-modal__background {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+  background: rgba(29, 41, 53, 0.1882352941);
+  display: flex;
+  align-items: end;
+  z-index: 10;
+}
+
+.datepicker-modal__content {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 16px 28px 28px;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: 80%;
+
+  .datepicker-content__block {
+    overflow-y: auto;
+  }
+
+  .reset-button {
+    font-size: 16px;
+    color: var(--primary-color);
+  }
+
+  .date-title {
+    font-size: 22px;
+    font-weight: 700;
+  }
+}
+
+.holder-button {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 28px;
+}
+
+.booking-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  gap: 15px;
+
+  .calendar-card {
+    background-color: #fff;
+    border-bottom: none;
+    width: 100%;
+  }
+}
+
+.search-ticket__block {
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  background-color: #fff;
+  width: 100%;
+  left: 0;
+  z-index: 5;
+  height: 100px;
+
+  button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90%;
+    width: 100%;
+    padding: 0 20px;
+  }
+}
+
+.month-display {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.mat-calendar {
+  display: flex;
+  flex-direction: column;
+}
+
+::ng-deep .mat-calendar-body-label {
+  visibility: hidden !important;
+}
+
+::ng-deep .mat-calendar-body-selected {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  box-shadow: none !important;
+}
+
+::ng-deep .mat-calendar-body-today {
+  border-color: var(--primary-color) !important;
+  border: none !important;
+}
+
+::ng-deep .mat-calendar-range-start {
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+
+  span {
+    color: #fff;
+  }
+}
+
+::ng-deep .mat-calendar-in-range {
+  background-color: rgba(76, 175, 80, 0.3) !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+}
+
+::ng-deep .mat-calendar-range-end {
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+}
+
+::ng-deep .mat-calendar-content {
+  padding: 0 !important;
+}
+
+::ng-deep .mat-mdc-card {
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.divider {
+  height: 0.8px;
+  width: 100%;
+  background-color: #95A5A6;
+}

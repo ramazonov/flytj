@@ -1,0 +1,178 @@
+<main class="main-page-content">
+  <div class="main-top__navigation">
+    <span class="d-flex"><app-icon icon="arrow-left-icon" color="none"/></span>
+    <h1 class="main-title">Авиабилеты</h1>
+    <span class="d-flex" (click)="openProfileModal()">
+      <app-icon icon="ticket-icon" color="none"/>
+    </span>
+  </div>
+
+  <div class="card">
+    <div class="input-from__block">
+      <app-icon icon="location-from-icon" color="#00B06C"/>
+
+      <div class="input-directions__inside-block">
+        <span class="directions-input__title">Откуда</span>
+        <app-custom-input
+          type="text"
+          [placeholder]="fromPlaceholder"
+          [(ngModel)]="fromCity"
+          [name]="fromCity"
+          class="custom-input"
+          (click)="openDirectionFromModal()"
+        />
+      </div>
+    </div>
+
+    <div class="divider-block">
+      <div class="divider"></div>
+
+      <button class="sort-vertical__button" (click)="swapLocations()">
+        <app-icon icon="swap-icon"/>
+      </button>
+    </div>
+
+    <div class="input-where__block">
+      <app-icon icon="location-to-icon"/>
+
+      <div class="input-directions__inside-block">
+        <span class="directions-input__title">Куда</span>
+        <app-custom-input
+          type="text"
+          [placeholder]="toPlaceholder"
+          [(ngModel)]="toCity"
+          [name]="toCity"
+          class="custom-input"
+          (click)="openDirectionToModal()"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="date-passengers__block">
+    <div class="d-flex justify-center align-start gap-2">
+      <div class="left-block">
+        <div [ngClass]="{'invalid-date': !isDateValid}" class="button-dates"
+             (click)="datepickerDepartureModal.openDepartureModal()">
+          <app-icon *ngIf="selectedDepartureDate" icon="calendar-icon" color="none"/>
+          <app-icon *ngIf="!selectedDepartureDate" icon="calendar-inactive-icon" color="none"/>
+
+          <span
+            [ngClass]="{'inactive-selected-date': !selectedDepartureDate, 'active-selected-date': selectedDepartureDate}"
+          >
+            {{ selectedDepartureDate || 'Когда' }}
+          </span>
+        </div>
+        <span *ngIf=" !isDateValid" class="invalid-date__title">Укажите дату</span>
+      </div>
+
+      <div class="right-block">
+        <div class="button-dates" (click)="datepickerReturnModal.openReturnModal()">
+          <app-icon *ngIf="selectedReturnDate" icon="calendar-icon" color="none"/>
+          <app-icon *ngIf="!selectedReturnDate" icon="calendar-inactive-icon" color="none"/>
+
+          <span
+            [ngClass]="{'inactive-selected-date': !selectedReturnDate, 'active-selected-date': selectedReturnDate}"
+          >
+            {{ selectedReturnDate || 'Обратно' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-passenger" (click)="openModalPassengers()">
+      <app-icon icon="person-icon" color="none"/>
+
+      <span class="passenger-class">
+            {{ tempPassengers.adults + tempPassengers.children + tempPassengers.infantsWithSeat }}
+        пасс, {{ travelClassText }}
+          </span>
+    </div>
+  </div>
+
+  <button
+    class="btn-primary mt-2"
+    (click)="searchTickets()"
+    *ngIf="isSearchButtonVisible"
+  >
+    Найти билеты
+  </button>
+
+  <app-direction-from-modal
+    #directionFromModalComponent
+    (selectDirection)="onDirectionFromSelected($event)"
+  />
+
+  <app-direction-to-modal
+    #directionToModalComponent
+    (selectDirection)="onDirectionToSelected($event)"
+  />
+
+  <app-modal-passengers
+    #modalPassengers
+    (selectPassengersAndClass)="handlePassengersAndClass($event)"
+  />
+
+  <app-datepicker-modal
+    #datepickerDepartureModal
+    (datesSelected)="handleSelectedDepartureDate($event)"
+  />
+
+  <app-datepicker-return-modal
+    #datepickerReturnModal
+    (datesSelected)="handleSelectedDepartureDate($event)"
+  />
+
+  <app-tickets-modal
+    #ticketsModal
+    [passengerCount]="passengerCount"
+    [travelClassText]="travelClassText"
+    [selectedDateText]="selectedDateText"
+    [flights]="flights"
+    [fromCity]="fromCity"
+    [toCity]="toCity"
+    [backRouteCity]="backRouteCity"
+    [isLoading]="isLoading"
+    (flightSelected)="onFlightSelected($event)"
+    (modalClosed)="onTicketsModalClosed()"
+  />
+
+  <app-preorder-modal
+    #preorderModal
+    [fromCity]="fromCity"
+    [passengerCount]="passengerCount"
+    [toCity]="toCity"
+    [included]="included"
+    [flight]="selectedFlight"
+    (flightSelected)="orderFlightSelected($event)"
+  />
+
+  <app-order-ticket-modal
+    #orderTicketModal
+    [passengerCount]="passengerCount"
+    [travelClassText]="travelClassText"
+    [selectedDateText]="selectedDateText"
+    [fromCity]="fromCity"
+    [toCity]="toCity"
+    [backRouteCity]="backRouteCity"
+    [passengers]="passengers"
+    [flight]="selectedFlight"
+    [isPassengerFormValid]="isPassengerFormValid"
+    [updatedPassengerData]="updatedPassengerData"
+    (detailPassengerSelected)="openDetailPassengerModal($event)"
+  />
+
+  <app-detail-passenger-modal
+    #detailPassengerModal
+    [passenger]="selectedPassenger"
+    (passengerDataUpdated)="onPassengerDataUpdated($event)"
+    (validationStatusChanged)="onValidationStatusChanged($event)"
+  />
+
+  <app-profile
+    *ngIf="isProfileModalOpen"
+    (closeModalEvent)="closeProfileModal()"
+  />
+</main>
+
+<router-outlet/>

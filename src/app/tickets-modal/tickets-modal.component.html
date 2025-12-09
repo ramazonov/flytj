@@ -1,0 +1,323 @@
+<div
+  *ngIf="isVisible"
+  class="tickets-modal__block"
+  [ngClass]="{'overflow-hidden': isFilterVisible}"
+>
+  <div class="top-nav__block">
+    <div class="d-flex ml-5" (click)="closeModal()">
+      <app-icon icon="arrow-left-icon" color="none"/>
+    </div>
+
+    <div>
+      <span>{{ fromCity }}</span> - <span>{{ toCity }}</span>
+    </div>
+
+    <div class="d-flex mr-5" (click)="openFilterModal()">
+      <app-icon icon="filter-icon"/>
+    </div>
+  </div>
+
+  <div class="tickets-modal__content">
+    <div class="main-tickets__block" [ngClass]="{'overflow-hidden': isFilterVisible}">
+      <div class="directions-title__block">
+        <div class="directions-info__title">
+          <span class="directions-title">{{ fromCity }}</span>
+          <span class="dash-block"></span>
+          <span class="directions-title">{{ toCity }}</span>
+          <span class="dash-block" *ngIf="backRouteCity"></span>
+          <span class="directions-title" *ngIf="backRouteCity">{{ backRouteCity }}</span>
+        </div>
+
+        <div class="booking-info__title-passengers">
+          <span>{{ selectedDateText }}</span>
+          <span>пассажиры: {{ passengerCount }}, {{ travelClassText }}</span>
+        </div>
+      </div>
+
+      <div
+        class="booking-info__title"
+        *ngIf="isModalBookingVisible"
+        (click)="openBookingInfoModal()"
+      >
+        <div class="booking-info__top">
+          <div class="d-flex mr-2">
+            <app-icon icon="warning-icon" color="none"/>
+          </div>
+          <span class="booking-info__top-title">Цена билетов может меняться</span>
+        </div>
+        <div class="arrow-left__icon">
+          <app-icon icon="arrow-left-icon" color="none"/>
+        </div>
+      </div>
+
+      <div class="loader-block" *ngIf="isLoading">
+        <img src="assets/speener.png" alt="Loader icon">
+        <span>Ищем<br>билеты</span>
+      </div>
+
+      <ul class="tickets-list" *ngIf="!isLoading">
+        <li class="tickets-list__item" *ngFor="let flight of filteredFlights | keyvalue">
+          <div class="d-flex flex-column gap-3" (click)="selectFlight(flight)">
+            <div class="tickets-list__item-top">
+              <img
+                ngSrc="assets/suppliers/{{ flight.value.validating_supplier }}.png"
+                alt=""
+                height="30"
+                width="90"
+              >
+              <div class="amount-money__block">
+                <span class="amount-title">{{ flight.value.total_price.TJS }} TJS</span>
+              </div>
+            </div>
+
+            <div class="times-block">
+              <ul class="times-block__list">
+                <li class="times-block__list-time">
+                  {{ extractHours(flight.value.routes[0].segments[0].departure.time) }}
+                </li>
+                <li class="times-block__list-city">{{ fromCity }}</li>
+                <li class="times-block__list-airport">({{ flight.value.routes[0].segments[0].departure.airport }})</li>
+              </ul>
+
+              <div class="airplane-icon__block">
+                <app-icon icon="airplane-icon" color="none"/>
+
+                <div class="times-block__title">
+                  <div class="divider-block">
+                    <span class="divider-block__line" *ngFor="let _ of [1, 2, 3, 4, 5]"></span>
+                  </div>
+                  <span class="no-wrap">{{ convertDuration(flight.value.routes[0].duration) }}</span>
+                  <div class="divider-block">
+                    <span class="divider-block__line" *ngFor="let _ of [1, 2, 3, 4, 5]"></span>
+                  </div>
+                </div>
+
+                <span class="times-block__title"></span>
+              </div>
+
+              <ul class="times-block__list">
+                <li class="times-block__list-time">
+                  {{ extractHours(flight.value.routes[0].segments[0].arrival.time) }}
+                </li>
+                <li class="times-block__list-city">{{ toCity }}</li>
+                <li class="times-block__list-airport">
+                  ({{ flight.value.routes[0].segments[flight.value.routes[0].segments.length - 1].arrival.airport }})
+                </li>
+              </ul>
+            </div>
+
+            <div class="tickets-list__item-bottom">
+              <ng-container *ngIf="flight.value.routes[0].segments.length === 1; else transfer">
+                Прямой рейс
+              </ng-container>
+              <ng-template #transfer>
+                {{ flight.value.routes[0].segments.length - 1 }} пересадка(и)
+              </ng-template>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <div *ngIf="!isLoading && flights.length === 0">
+        <p>Билеты не найдены</p>
+      </div>
+
+      <div
+        class="booking-info__modal-layout"
+        *ngIf="isBookingInfoModal"
+        (click)="closeBookingInfoModal()"
+      >
+        <div
+          class="booking-info__modal"
+          (click)="$event.stopPropagation()"
+        >
+          <div
+            class="d-flex justify-end pa-5 pb-0"
+            (click)="closeBookingInfoModal()"
+          >
+            <app-icon icon="close-icon" width="20" height="20"/>
+          </div>
+
+          <div class="pa-8 pt-0 d-flex flex-column gap-2">
+            <app-icon class="d-flex justify-center" icon="big-warning-icon" width="57" height="56" color="none"/>
+
+            <h1 class="booking-info__modal-title">Цена билетов может меняться</h1>
+            <p class="booking-info__modal-text mb-2">
+              Заполните информацию и оплатите<br>
+              авиабилет в течение 10 минут, чтобы<br>
+              избежать изменения цены.
+            </p>
+
+            <button class="btn-primary" (click)="closeBookingInfoModal()">Понятно</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal-background"
+    (click)="closeFilterModal()"
+    *ngIf="isFilterVisible"
+  >
+    <div
+      class="modal-content"
+      @slideInOut
+      (@slideInOut.done)="onAnimationFilterModal($event)"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="holder-button">
+        <app-icon icon="holder-icon"/>
+      </div>
+
+      <h2>Фильтры</h2>
+
+      <ul class="filter-block">
+        <li class="filter-details__block">
+          <span class="title">Стоимость</span>
+          <div class="filter-block__inputs">
+            <input
+              [(ngModel)]="minPrice"
+              placeholder="От"
+              type="number"
+            >
+            <input
+              [(ngModel)]="maxPrice"
+              placeholder="До"
+              type="number"
+            >
+          </div>
+        </li>
+
+        <li class="divider"></li>
+
+        <li class="filter-details__block">
+          <span>Возврат</span>
+          <ul class="refund-list">
+            <li class="baggage-list__item"
+                [class.active]="selectedRefund === 'С возвратом'"
+                (click)="toggleRefund('С возвратом')">
+              С возвратом
+            </li>
+            <li class="baggage-list__item"
+                [class.active]="selectedRefund === 'Без возврата'"
+                (click)="toggleRefund('Без возврата')">
+              Без возврата
+            </li>
+          </ul>
+        </li>
+
+        <li class="divider"></li>
+
+        <li class="filter-details__block">
+          <span>Обмен</span>
+          <ul class="refund-list">
+            <li
+              class="baggage-list__item"
+              [class.active]="selectedChange === 'С обменом'"
+              (click)="toggleChange('С обменом')"
+            >
+              С обменом
+            </li>
+            <li
+              class="baggage-list__item"
+              [class.active]="selectedChange === 'Без обмена'"
+              (click)="toggleChange('Без обмена')"
+            >
+              Без обмена
+            </li>
+          </ul>
+        </li>
+
+        <li class="divider"></li>
+
+        <li class="filter-details__block">
+          <span>Пересадки</span>
+          <ul class="transfer-list">
+            <li
+              class="transfer-list__item"
+              [class.active]="selectedTransfer === 'Прямой рейс'"
+              (click)="toggleTransfer('Прямой рейс')"
+            >
+              Прямой рейс
+            </li>
+            <li
+              class="transfer-list__item"
+              [class.active]="selectedTransfer === '1 пересадка'"
+              (click)="toggleTransfer('1 пересадка')"
+            >
+              1 пересадка
+            </li>
+            <li
+              class="transfer-list__item"
+              [class.active]="selectedTransfer === '2 пересадка'"
+              (click)="toggleTransfer('2 пересадка')"
+            >
+              2 пересадки
+            </li>
+            <li
+              class="transfer-list__item"
+              [class.active]="selectedTransfer === '3 пересадка'"
+              (click)="toggleTransfer('3 пересадка')"
+            >
+              3 пересадки
+            </li>
+          </ul>
+        </li>
+
+        <li class="divider"></li>
+
+        <li class="filter-details__block">
+          <span>Время</span>
+          <div class="filter-time">
+            <div class="d-flex align-center gap-2">
+              <label>От:</label>
+              <div class="custom-dropdown">
+                <div class="dropdown-toggle" (click)="toggleTimeDropdown('from')">
+                  {{ selectedTimeFrom !== '' ? selectedTimeFrom + ':00' : 'Любое' }}
+                </div>
+                <div *ngIf="isDropdownTimeOpen.from" class="dropdown-menu">
+                  <div
+                    class="dropdown-item"
+                    (click)="selectTime('from', '')">
+                    Любое
+                  </div>
+                  <div
+                    *ngFor="let hour of hours"
+                    class="dropdown-item"
+                    (click)="selectTime('from', hour)">
+                    {{ hour }}:00
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex align-center gap-2">
+              <label>До:</label>
+              <div class="custom-dropdown">
+                <div class="dropdown-toggle" (click)="toggleTimeDropdown('to')">
+                  {{ selectedTimeTo !== '' ? selectedTimeTo + ':00' : 'Любое' }}
+                </div>
+                <div *ngIf="isDropdownTimeOpen.to" class="dropdown-menu">
+                  <div
+                    class="dropdown-item"
+                    (click)="selectTime('to', '')">
+                    Любое
+                  </div>
+                  <div
+                    *ngFor="let hour of hours"
+                    class="dropdown-item"
+                    (click)="selectTime('to', hour)">
+                    {{ hour }}:00
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <button class="btn-primary" (click)="applyFilters()">Показать результаты</button>
+    </div>
+  </div>
+</div>

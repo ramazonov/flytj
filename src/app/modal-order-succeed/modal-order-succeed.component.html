@@ -1,0 +1,8 @@
+<div class="order-succeed-modal__background" *ngIf="isVisible">
+  <app-icon icon="big-succeed-icon" width="96" height="96"/>
+
+  <p>Ваш запрос находится в обработке!</p>
+  <div class="back-block__button">
+    <button class="btn-primary" (click)="backToHome()">Назад</button>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<div *ngIf="isVisible" class="modal-background" (click)="closeModal()">
+  <div
+    class="modal-content"
+    @slideInOut
+    (@slideInOut.done)="onAnimationEvent($event)"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="holder-button">
+      <app-icon icon="holder-icon"/>
+    </div>
+
+    <div class="passenger-content__block">
+      <h2>Пассажиры</h2>
+
+      <ul class="passengers-class__list">
+        <span
+          class="toggle-indicator"
+          [class.economy]="selectedClass === 'economy'"
+          [class.business]="selectedClass === 'business'"
+        ></span>
+        <li class="passengers-class__list-item">
+          <button
+            class="passengers-class__button"
+            [class.active]="selectedClass === 'economy'"
+            (click)="selectClass('economy')"
+          >
+            Эконом
+          </button>
+        </li>
+        <li class="passengers-class__list-item">
+          <button
+            class="passengers-class__button"
+            [class.active]="selectedClass === 'business'"
+            (click)="selectClass('business')"
+          >
+            Бизнес
+          </button>
+        </li>
+      </ul>
+
+      <ul class="passengers-list__item">
+        <li class="passengers-list__item-details">
+          <div class="left-block">
+            <h4>Взрослые</h4>
+            <small>Старше 12 лет</small>
+          </div>
+
+          <div class="right-block">
+            <button (click)="decreaseAdults()" class="decrease-button">
+              <app-icon icon="minus-icon" width="32" height="32"/>
+            </button>
+            <span>{{ tempAdults }}</span>
+            <button (click)="increaseAdults()" class="increase-button">
+              <app-icon icon="plus-icon" width="32" height="32"/>
+            </button>
+          </div>
+        </li>
+        <li class="passengers-list__item-details">
+          <div class="left-block">
+            <h4>Дети</h4>
+            <small>От 2 до 12 лет</small>
+          </div>
+
+          <div class="right-block">
+            <button (click)="decreaseChildren()" class="decrease-button">
+              <app-icon icon="minus-icon" width="32" height="32"/>
+            </button>
+            <span>{{ tempChildren }}</span>
+            <button (click)="increaseChildren()" class="increase-button">
+              <app-icon icon="plus-icon" width="32" height="32"/>
+            </button>
+          </div>
+        </li>
+
+        <li class="passengers-list__item-details">
+          <div class="left-block">
+            <h4>Младенцы</h4>
+            <small>До 2 лет, без места</small>
+          </div>
+
+          <div class="right-block">
+            <button (click)="decreaseInfantsWithSeat()" class="decrease-button">
+              <app-icon icon="minus-icon" width="32" height="32"/>
+            </button>
+            <span>{{ tempInfantsWithSeat }}</span>
+            <button (click)="increaseInfantsWithSeat()" class="increase-button">
+              <app-icon icon="plus-icon" width="32" height="32"/>
+            </button>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="choose-class__block">
+      <button class="btn-primary" (click)="confirmSelection()">Готово</button>
+    </div>
+  </div>
+</div>
