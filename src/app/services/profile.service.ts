@@ -1,25 +1,22 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileService {
-  private apiUrl = 'https://integration.cbt.tj/api/flytj/passenger';
-  private apiTicketsUrl = 'https://integration.cbt.tj/api/flytj/ticket';
-
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   getPassengers(walletPhone: string): Observable<any> {
     const params = new HttpParams().set('walletPhone', walletPhone);
-    return this.http.get<any>(`${this.apiUrl}/list`, {params});
+    return this.http.get<any>(`${environment.cbtBaseUrl}/passenger/list`, {params});
   }
 
   getTickets(walletPhone: string): Observable<any> {
     const params = new HttpParams().set('walletPhone', walletPhone);
-    return this.http.get<any>(`${this.apiTicketsUrl}/list`, {params});
+    return this.http.get<any>(`${environment.cbtBaseUrl}/ticket/list`, {params});
   }
 
   addPassenger(passenger: {
@@ -38,7 +35,7 @@ export class ProfileService {
     passportIssueDate: string,
     walletPhone: string
   }): Observable<any> {
-    const url = `${this.apiUrl}`
+    const url = `${environment.cbtBaseUrl}/passenger`;
     return this.http.post<any>(url, passenger);
   }
 
@@ -58,12 +55,12 @@ export class ProfileService {
     passportIssueDate?: string,
     walletPhone?: string
   }): Observable<any> {
-    const url = `${this.apiUrl}/update`
+    const url = `${environment.cbtBaseUrl}/passenger/update`
     return this.http.put<any>(url, updatedPassenger)
   }
 
   deletePassenger(passengerId: number): Observable<any> {
-    const url = `${this.apiUrl}/${passengerId}`;
+    const url = `${environment.cbtBaseUrl}/passenger/${passengerId}`;
     return this.http.delete<any>(url);
   }
 }

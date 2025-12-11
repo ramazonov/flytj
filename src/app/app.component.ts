@@ -28,6 +28,7 @@ import {IconComponent} from "./shared/icon/icon.component";
 import {DatepickerModalComponent} from "./datepicker-modal/datepicker-modal.component";
 import {DatepickerReturnModalComponent} from "./datepicker-return-modal/datepicker-return-modal.component";
 import { environment } from '../environments/environment';
+import { finalize } from 'rxjs';
 
 registerLocaleData(localeRu);
 
@@ -258,6 +259,8 @@ export class AppComponent implements OnInit {
   }
 
   searchTickets() {
+    this.backRouteCity = '';
+
     if (!this.selectedStartDate) {
       this.isDateValid = false;
       return;
@@ -276,12 +279,11 @@ export class AppComponent implements OnInit {
     const formattedDate = this.selectedStartDate
       ? dayjs(this.selectedStartDate).format('YYYY-MM-DD')
       : dayjs().format('YYYY-MM-DD');
-
-    const companyReqId = sessionStorage.getItem('company_req_id') || environment.companyReqId;
+    
     const flightType = this.selectedEndDate ? 'RT' : 'OW';
 
     let body = {
-      company_req_id: companyReqId,
+      company_req_id: environment.companyReqId,
       language: 'ru',
       flight_type: flightType,
       cabin: this.passengers.travelClass.toLowerCase(),
@@ -308,9 +310,10 @@ export class AppComponent implements OnInit {
         to: this.fromAirportCode,
         date: formattedReturnDate
       });
-    }
     
-    this.backRouteCity = this.fromCity;
+      this.backRouteCity = this.fromCity;
+    }
+
 
     const token = sessionStorage.getItem('token');
 
@@ -319,18 +322,23 @@ export class AppComponent implements OnInit {
         Authorization: `Bearer ${token}`
       };
 
-      this.http.post(url, body, {headers}).subscribe(
-        (response: any) => {
-          sessionStorage.setItem('sessionId', response.data.session);
-          this.flights = response.data.flights;
-          this.included = response.data.included;
-          this.isLoading = false;
+      this.http.post(url, body, {headers})
+      .pipe(finalize(() => { this.isLoading = false; }))
+      .subscribe({
+        next: (response: any) => {
+          if (response.data){
+            sessionStorage.setItem('sessionId', response.data.session);
+            this.flights = response.data.flights;
+            this.included = response.data.included;
+          } else {
+            this.flights = [];
+            this.included = undefined; 
+          }
         },
-        (error) => {
+        error: (error) => {
           console.error('Search ticket error:', error);
-          this.isLoading = false;
         }
-      );
+      });
     } else {
       console.error('Token is not available.');
       this.isLoading = false;
@@ -368,14 +376,12 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    sessionStorage.setItem('company_req_id', String(environment.companyReqId));
-
     this.route.queryParams.subscribe(params => {
       const walletPhone = params['walletPhone'];
       if (walletPhone) {
         this.login(walletPhone);
       } else {
-        console.error('walletPhone не найден в параметрах URL');
+        console.warn('walletPhone не найден в параметрах URL');
       }
     });
 

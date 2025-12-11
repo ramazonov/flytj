@@ -1,0 +1,9 @@
+{
+  "/proxyapi/**": {
+    "target": "https://connector-common.dev.theflysoft.com",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": { "^/proxyapi": "" }
+  }
+}
