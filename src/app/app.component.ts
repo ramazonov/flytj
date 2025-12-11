@@ -1,5 +1,5 @@
-import {Component, ViewChild, OnInit, LOCALE_ID, Input} from '@angular/core';
-import {RouterOutlet, ActivatedRoute, Router} from '@angular/router';
+import {Component, ViewChild, OnInit, LOCALE_ID} from '@angular/core';
+import {RouterOutlet, ActivatedRoute} from '@angular/router';
 import {CustomInputComponent} from "./custom-input/custom-input.component";
 import {NgClass, NgIf, NgOptimizedImage, registerLocaleData} from "@angular/common";
 import {ModalPassengersComponent} from "./modal-passengers/modal-passengers.component";
@@ -27,6 +27,8 @@ import {CustomDateAdapter} from "./calendar-header/calendar-header.component";
 import {IconComponent} from "./shared/icon/icon.component";
 import {DatepickerModalComponent} from "./datepicker-modal/datepicker-modal.component";
 import {DatepickerReturnModalComponent} from "./datepicker-return-modal/datepicker-return-modal.component";
+import { environment } from '../environments/environment';
+import { finalize } from 'rxjs';
 
 registerLocaleData(localeRu);
 
@@ -77,11 +79,6 @@ export class AppComponent implements OnInit {
   @ViewChild('orderTicketModal') orderTicketModal!: OrderTicketModalComponent;
   @ViewChild('detailPassengerModal') detailPassengerModal!: DetailPassengerModalComponent;
   @ViewChild('modalOrderSucceed') modalOrderSucceed!: ModalOrderSucceedComponent;
-
-  private readonly companyReqId = 26;
-  private readonly secretKey = '98357c92347b70b6bc0ea97f0acf84040sa2dof5ba1411218c3f1087316fd3663fc6f88';
-  // private readonly apiUrl = 'https://bft-alpha.55fly.ru/api';
-  private readonly apiUrl = 'https://auth.dev.theflysoft.com';
 
   fromPlaceholder: string = 'Откуда';
   toPlaceholder: string = 'Куда';
@@ -262,7 +259,8 @@ export class AppComponent implements OnInit {
   }
 
   searchTickets() {
-    debugger
+    this.backRouteCity = '';
+
     if (!this.selectedStartDate) {
       this.isDateValid = false;
       return;
@@ -274,41 +272,48 @@ export class AppComponent implements OnInit {
     this.passengerDataService.sendPassengersEvent(this.tempPassengers);
 
     this.passengers = {...this.tempPassengers};
-    // const url = `${this.apiUrl}/search`;
-    const url = `https://connector-common.dev.theflysoft.com/v1/mobi/search`;
+    const url = `${environment.mobiBaseUrl}/v1/mobi/search`;
     this.ticketsModal.openModal();
     this.isLoading = true;
 
     const formattedDate = this.selectedStartDate
       ? dayjs(this.selectedStartDate).format('YYYY-MM-DD')
       : dayjs().format('YYYY-MM-DD');
-
-    const companyReqId = sessionStorage.getItem('company_req_id') || '26';
+    
     const flightType = this.selectedEndDate ? 'RT' : 'OW';
 
-    let params = new HttpParams()
-      .set('passengers[adt]', this.passengers.adults.toString())
-      .set('passengers[chd]', this.passengers.children.toString())
-      .set('passengers[ins]', this.passengers.infantsWithSeat.toString())
-      .set('passengers[inf]', 0)
-      .set('routes[0][from]', this.fromAirportCode)
-      .set('routes[0][to]', this.toAirportCode)
-      .set('routes[0][date]', formattedDate)
-      .set('flight_type', flightType)
-      .set('cabin', this.passengers.travelClass.toLowerCase())
-      .set('company_req_id', companyReqId)
-      .set('language', 'ru');
+    let body = {
+      company_req_id: environment.companyReqId,
+      language: 'ru',
+      flight_type: flightType,
+      cabin: this.passengers.travelClass.toLowerCase(),
+      passengers: {
+          adt: this.passengers.adults,     
+          chd: this.passengers.children,   
+          inf: 0,
+          ins: this.passengers.infantsWithSeat
+      },
+      routes: [
+          {
+              from: this.fromAirportCode, 
+              to: this.toAirportCode,
+              date: formattedDate
+          }
+      ]
+    }
 
     if (this.selectedEndDate) {
       const formattedReturnDate = dayjs(this.selectedEndDate).format('YYYY-MM-DD');
 
-      params = params
-        .set('routes[1][from]', this.toAirportCode)
-        .set('routes[1][to]', this.fromAirportCode)
-        .set('routes[1][date]', formattedReturnDate);
-
+      body.routes.push({
+        from: this.toAirportCode,
+        to: this.fromAirportCode,
+        date: formattedReturnDate
+      });
+    
       this.backRouteCity = this.fromCity;
     }
+
 
     const token = sessionStorage.getItem('token');
 
@@ -317,18 +322,23 @@ export class AppComponent implements OnInit {
         Authorization: `Bearer ${token}`
       };
 
-      this.http.get(url, {params, headers}).subscribe(
-        (response: any) => {
-          sessionStorage.setItem('sessionId', response.data.session);
-          this.flights = response.data.flights;
-          this.included = response.data.included;
-          this.isLoading = false;
+      this.http.post(url, body, {headers})
+      .pipe(finalize(() => { this.isLoading = false; }))
+      .subscribe({
+        next: (response: any) => {
+          if (response.data){
+            sessionStorage.setItem('sessionId', response.data.session);
+            this.flights = response.data.flights;
+            this.included = response.data.included;
+          } else {
+            this.flights = [];
+            this.included = undefined; 
+          }
         },
-        (error) => {
+        error: (error) => {
           console.error('Search ticket error:', error);
-          this.isLoading = false;
         }
-      );
+      });
     } else {
       console.error('Token is not available.');
       this.isLoading = false;
@@ -336,24 +346,22 @@ export class AppComponent implements OnInit {
   }
 
   private generateSignature(login: string, date: string): string {
-    const signatureString = `${login}${this.companyReqId}${this.secretKey}${date}`;
+    const signatureString = `${login}${ environment.companyReqId}${environment.secretKey}${date}`;
     return sha512(signatureString).toString();
   }
 
   login(walletPhone: string) {
-    debugger
     const date = this.getCurrentDate();
     const signature = this.generateSignature(walletPhone, date);
 
     const loginData = {
       date: date,
-      company_req_id: this.companyReqId,
+      company_req_id: environment.companyReqId,
       login: walletPhone,
       signature: signature
     }
 
-    // return this.http.post(`${this.apiUrl}/wallet/auth`, loginData).subscribe(
-    return this.http.post(`${this.apiUrl}/v1/mobi/auth`, loginData).subscribe(
+    return this.http.post(`${environment.authBaseUrl}/v1/mobi/auth`, loginData).subscribe(
       (response: any) => {
         sessionStorage.setItem('token', response.token);
       },
@@ -368,14 +376,12 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    sessionStorage.setItem('company_req_id', String(this.companyReqId));
-
     this.route.queryParams.subscribe(params => {
       const walletPhone = params['walletPhone'];
       if (walletPhone) {
         this.login(walletPhone);
       } else {
-        console.error('walletPhone не найден в параметрах URL');
+        console.warn('walletPhone не найден в параметрах URL');
       }
     });
 

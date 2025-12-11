@@ -108,7 +108,6 @@ export class DirectionToModalComponent {
     if (searchTermTrimmed.length > 0) {
       this.cityService.searchCities(searchTermTrimmed).subscribe({
         next: (res) => {
-          console.log(res.data);
           this.filteredDirections = res.data.map((item: any) => ({
             city: item.item.ru || item.item.tj,
             airport_code: item.item_code,

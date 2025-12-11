@@ -9,6 +9,7 @@ import {FormsModule} from "@angular/forms";
 import {ModalOrderSucceedComponent} from "../modal-order-succeed/modal-order-succeed.component";
 import {ModalStateService} from "../services/modal-state.service";
 import {IconComponent} from "../shared/icon/icon.component";
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-order-ticket-modal',
@@ -58,9 +59,6 @@ export class OrderTicketModalComponent implements OnInit {
     gender: ''
   };
 
-  private apiUrl = 'https://integration.cbt.tj/api/flytj/book';
-  //private apiUrl = 'http://192.168.40.238:9800/api/flytj/book';
-  // private apiUrl = 'http://localhost:5273/api/flytj/book';
   passengersList: any[] = [];
   passengersDataList: any[] = [];
 
@@ -175,6 +173,7 @@ export class OrderTicketModalComponent implements OnInit {
       walletPhone: this.walletPhone,
       token: sessionStorage.getItem('token'),
       url: window.location.href,
+      language: 'tj',
       session_id: sessionStorage.getItem('sessionId'),
       rec_id: this.flight.value.rec_id,
       partner_fees: this.flight.value.partner_fees.TJS,
@@ -209,7 +208,7 @@ export class OrderTicketModalComponent implements OnInit {
 
   sendOrderRequest(data: any): Observable<any> {
     this.isLoading = true;
-    return this.http.post(this.apiUrl, data).pipe(
+    return this.http.post(`${environment.cbtBaseUrl}/book`, data).pipe(
       tap({
         next: (response: any) => {
           if (response && response.success) {
